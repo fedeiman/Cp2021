@@ -1,9 +1,10 @@
 # Compilers
-CC = gcc
+CC = 
 
 # Flags
-CFLAGS = -std=c11 -Wall -Wextra
+CFLAGS = -std=c11 -Wall -Wextra -O3 $(EXTRA)
 LDFLAGS = -lm
+EXTRA =
 
 # Binary file
 TARGET = tiny_mc
