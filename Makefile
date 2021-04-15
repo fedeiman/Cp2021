@@ -1,16 +1,19 @@
 # Compilers
-CC = clang
+# Compilers
+CC = gcc
 
 # Flags
-CFLAGS = -std=c11 -Wall -Wextra -O3 $(EXTRA)
+CFLAGS = -std=c11 -Wall -Wextra $(EXTRA)
 LDFLAGS = -lm
 EXTRA =
 
+FILE =
+
 # Binary file
-TARGET = tiny_mc3
+TARGET = tiny_mc
 
 # Files
-C_SOURCES = tiny_mc.c wtime.c tiny_twis.c
+C_SOURCES = $(TARGET).c wtime.c mtwister.c
 C_OBJS = $(patsubst %.c, %.o, $(C_SOURCES))
 
 # Rules

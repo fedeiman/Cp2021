@@ -116,14 +116,14 @@ int main(void)
     double elapsed = end - start;
 
     
-    printf("# %lf seconds\n", elapsed);
-    printf("# %lf K photons per second\n", 1e-3 * PHOTONS / elapsed);
+    // printf("# %lf seconds\n", elapsed);
+    // printf("# %lf K photons per second\n", 1e-3 * PHOTONS / elapsed);
 
     //
     printf("%lf\n", 1e-3 * PHOTONS / elapsed);
 
     
-    printf("# Radius\tHeat\n");
+    /* printf("# Radius\tHeat\n");
     printf("# [microns]\t[W/cm^3]\tError\n");
     float t = 4.0f * M_PI * powf(MICRONS_PER_SHELL, 3.0f) * PHOTONS / 1e12;
     for (unsigned int i = 0; i < SHELLS - 1; ++i) {
@@ -133,6 +133,6 @@ int main(void)
     }
     printf("# extra\t%12.5f\n", heat[SHELLS - 1] / PHOTONS);
     printf("# %lf seconds\n", elapsed);
-    printf("# %lf K photons per second\n", 1e-3 * PHOTONS / elapsed);
+    printf("# %lf K photons per second\n", 1e-3 * PHOTONS / elapsed); */
     return 0;
 }

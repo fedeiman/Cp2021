@@ -85,10 +85,10 @@ static void photon(void)
 int main(void)
 {
     // heading
-    printf("# %s\n# %s\n# %s\n", t1, t2, t3);
+    /* printf("# %s\n# %s\n# %s\n", t1, t2, t3);
     printf("# Scattering = %8.3f/cm\n", MU_S);
     printf("# Absorption = %8.3f/cm\n", MU_A);
-    printf("# Photons    = %8d\n#\n", PHOTONS);
+    printf("# Photons    = %8d\n#\n", PHOTONS); */
 
     // configure RNG
     srand(SEED);
