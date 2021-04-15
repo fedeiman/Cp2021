@@ -53,7 +53,7 @@ def runExplore(linux = True, runs=10, photons=32768):
                         results.append(result)
                 # Guardo el resultado en la lista como un dict para que sea mas facil
                 command = f'{compiler}_{flag}'
-                meanResult = {"command":command ,"value" : round(statistics.mean(results), 2), "compileCommand":compiler_command}
+                meanResult = {"command":command ,"value" : round(statistics.mean(results), 2), "compiler":compiler, "flag":flag, "target":target}
                 #Turbion pero todo tiene sentido 
                 targetResults[targets.index(target)].append(meanResult)
                 progressCur += 1
@@ -71,12 +71,12 @@ def runExplore(linux = True, runs=10, photons=32768):
             #Ordena las listas tomando en cuenta el value nomas, prettyprintealo al files
             pprint.pprint([{key:d[key] for key in d if key!='compileCommand'} for d in result], f)
     # Dame el commando con el mejor tiempo
-    return max([results[0] for results in targetResults],key=lambda x:x['value'])["compileCommand"]
+    return max([results[0] for results in targetResults],key=lambda x:x['value'])
 
 def runScale(linux=True, flags='-O2 -ffast-math -funroll-all-loops', compiler='gcc-10', target='tiny_twis'):
     randomSeed = random.randint(0, 4294967295)
     results = []
-    for i in range(0, 131073, 2048):
+    for i in range(0, 131073, 4096):
         execute(f'make cleanMain TARGET={target}')
         execute(f"make CC='{compiler}' EXTRA='{flags} -DPHOTONS={i} -DSEED={randomSeed}' TARGET='{target}'")
         temp = []
@@ -90,7 +90,10 @@ def runScale(linux=True, flags='-O2 -ffast-math -funroll-all-loops', compiler='g
     xs = np.linspace(0, 131072, 500)
     plt.plot(xs, spl(xs), 'g', lw = 2)
     plt.scatter(x, y, s=10)
-    plt.savefig('Result.png')
+    if linux:
+        plt.savefig('Result_i7.png')
+    else:
+        plt.savefig('Result_M1.png')
     
 
 def main(argv):
@@ -121,9 +124,10 @@ def main(argv):
         expResults = runExplore(linux)
     if scale:
         if expResults:
-            runScale(linux, expResults)
+            runScale(linux, flags=expResults['flag'], compiler=expResults['compiler'], target=expResults['target'])
         else:
             runScale(linux)
    
 if __name__ == "__main__":
-   main(sys.argv[1:])
+    execute('make clean')
+    main(sys.argv[1:])
