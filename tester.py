@@ -49,7 +49,7 @@ def runExplore(linux = True, runs=10, photons=32768):
                 for run in range(runs):
                     result = float(executeWithOutput(f'./{target}'))
                     # Pa calentar la cache? solo guardamos las ultimas 6 corridas
-                    if run > 4:
+                    if run > 0:
                         results.append(result)
                 # Guardo el resultado en la lista como un dict para que sea mas facil
                 command = f'{compiler}_{flag}'
@@ -76,20 +76,25 @@ def runExplore(linux = True, runs=10, photons=32768):
 def runScale(linux=True, flags='-O2 -ffast-math -funroll-all-loops', compiler='gcc-10', target='tiny_twis'):
     randomSeed = random.randint(0, 4294967295)
     results = []
-    for i in range(0, 131073, 4096):
+    for i in range(512, 65538, 512):
         execute(f'make cleanMain TARGET={target}')
         execute(f"make CC='{compiler}' EXTRA='{flags} -DPHOTONS={i} -DSEED={randomSeed}' TARGET='{target}'")
         temp = []
-        for _ in range(5):
-            temp.append(float(executeWithOutput(f'./{target}')))
+        for j in range(5):
+            if j> 0:
+                temp.append(float(executeWithOutput(f'./{target}')))
         results.append([i, statistics.mean(temp)])
-        printProgressBar(i, 131073)
+        printProgressBar(i, 65534)
     x, y = zip(*results)
     #Scipy spline interpolation
-    spl = UnivariateSpline(x, y, k=2)
-    xs = np.linspace(0, 131072, 500)
-    plt.plot(xs, spl(xs), 'g', lw = 2)
-    plt.scatter(x, y, s=10)
+    spl = UnivariateSpline(x, y, k=2, s=10000)
+    xs = np.linspace(512, 65534, 500)
+    plt.title("Scaling")
+    plt.xlabel("Cantidad de Fotones")
+    plt.ylabel("K/Fotones por segundo")
+    spline = plt.plot(xs, spl(xs), 'g', lw = 2)
+    data = plt.scatter(x, y,c='b', s=10)
+    plt.legend([data, spline], ['Datos Obtenidos', 'Interpolacion'])
     if linux:
         plt.savefig('Result_i7.png')
     else:
