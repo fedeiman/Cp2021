@@ -87,14 +87,14 @@ def runScale(linux=True, flags='-O2 -ffast-math -funroll-all-loops', compiler='g
         printProgressBar(i, 65534)
     x, y = zip(*results)
     #Scipy spline interpolation
-    spl = UnivariateSpline(x, y, k=2, s=10000)
+    spl = UnivariateSpline(x, y, k=2, s=30000)
     xs = np.linspace(512, 65534, 500)
     plt.title("Scaling")
     plt.xlabel("Cantidad de Fotones")
     plt.ylabel("K/Fotones por segundo")
-    spline = plt.plot(xs, spl(xs), 'g', lw = 2)
-    data = plt.scatter(x, y,c='b', s=10)
-    plt.legend([data, spline], ['Datos Obtenidos', 'Interpolacion'])
+    plt.plot(xs, spl(xs), 'g', lw = 2, label='Interpolacion')
+    plt.scatter(x, y,c='b', s=10, label='Datos Obtenidos')
+    plt.legend()
     if linux:
         plt.savefig('Result_i7.png')
     else:
