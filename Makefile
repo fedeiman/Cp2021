@@ -25,3 +25,6 @@ $(TARGET): $(C_OBJS)
 clean:
 	rm -f $(TARGET) *.o
 
+cleanMain: 
+	rm -f $(TARGET) $(TARGET).o
+
