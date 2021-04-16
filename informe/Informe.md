@@ -35,9 +35,9 @@ Otra opcion de metrica es usar el comando:
 pero como solo funciona para la pc con ubuntu decidimos descartarlo en las comparaciones.
 
 ### Optimizacion 
-Lo primero que hicimos fue armar un script en python que recorriese todo el espacio de flags que queriamos probar. El script tambien corria 10 veces el script, descartaba el primer resultado (en general siempre daba bastante mas bajo que los subsiguientes, calienta la cache?) y sacaba la media de los resultados. Asi obtuvimos los flags que daban mejores resultados en cada computadora.
+Lo primero que hicimos fue armar un script en python que recorriese todo el espacio de flags que queriamos probar. El script tambien corria 10 veces el programa, descartaba el primer resultado (en general siempre daba bastante mas bajo que los subsiguientes, calienta la cache?) y sacaba la media de los resultados. Asi obtuvimos los flags que daban mejores resultados en cada computadora.
 
-Como otra optimizacion decidimos usar una libreria para generar numeros random mediante el conocido generador de numeros llamado [Mersenne twister](https://github.com/ESultanik/mtwister) ya que investigando un poco nos encontramos que el rendimiento de mersenne twister suele ser mejor que la mayoria de los generadores pseudoaleatorios y tiny_mc utiliza varios numeros random en cada corrida del loop principal.
+Como otra optimizacion decidimos usar una libreria para generar numeros random mediante el conocido generador de numeros llamado [Mersenne twister](https://github.com/ESultanik/mtwister) ya que investigando un poco nos encontramos que el rendimiento de mersenne twister suele ser [mejor](https://stackoverflow.com/questions/32027839/why-is-mersenne-twister-faster-than-the-linear-congruential-generator) que la mayoria de los generadores pseudoaleatorios y tiny_mc utiliza varios numeros random en cada corrida del loop principal.
 
 Esto nos brindo una gran mejora en cuanto a resultados, la implementacion de este generador esta en el archivo tiny_twis.c y lo compararemos con el tiny_mc.c.
 
@@ -51,7 +51,7 @@ Tambien hubo optimizaciones que tenian mas efecto en una pc que en la otra, --fu
 Para ver como cambiaba la velocidad dependiendo al tamaño del problema lo que hicimos fue aprovechar la posibilidad de redefinir la constante PHOTONS en compilacion con el flag -DPHOTONS para ver como afectaba el cambio de la cantidad de fotones a la perfomance, calculamos desde 512 fotones a 65534 con saltos de 512. 
 
 Aca notamos una gran diferencia entre ambas CPUs ya que el procesador Intel a partir de 10k fotones se estabilizaba y llegaba a su performance maxima. Por otro lado en el M1 la performace crece gradualmente hasta llegar a los 30k fotones donde se empieza a estabilizar. En ambos casos el scaling es logaritmico aunque en Intel es mas constante, la cantidad de K fotones/s en Intel tiene un rango entre 220 y 260 descartantado puntos anomalos mientras que el M1 tiene un rango entre 250 y 600.
-Tambien graficamos un spline cubico suavizado interpolando los datos para tenerlo como referencia.
+Tambien graficamos un spline cubico suavizado interpolando los datos para tenerlo como referencia. Estos resultados tambien se obtuvieron corriendo el programa varias veces , descartando el primer resultado y haciendo la media de los restantes. 
 #### Grafico Intel Core i7
 ![Scaling Results i7](Result_i7.png)
 #### Grafico Apple M1
