@@ -2,8 +2,10 @@
 *.o
 # Compiled files
 tiny_mc
-tinytwis
+tiny_twis
 #python cache
 __pycache__/
 #Diffrent in arm and x86
 wtime.c
+#Extra
+.DS_STORE
