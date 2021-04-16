@@ -35,5 +35,19 @@ Otra opcion de metrica es usar el comando:
 pero como solo funciona para la pc con ubuntu decidimos descartarlo en las comparaciones.
 
 ### Optimizacion 
-Finalmente como optimizacion decidimos usar una libreria para generar numeros random mediante el conocido generador de numeros llamado [Mersenne twister](https://github.com/ESultanik/mtwister) lo que nos brindo una gran mejora en cuanto a resultados, la implementacion de este generador esta en el archivo tiny_twis.c y lo comparamos con el tiny_mc.c.
+Finalmente como optimizacion decidimos usar una libreria para generar numeros random mediante el conocido generador de numeros llamado [Mersenne twister](https://github.com/ESultanik/mtwister) ya que investigando un poco nos encontramos que el rendimiento de mersenne twister suele ser mejor que la mayoria de los generadores pseudoaleatorios. 
 
+Esto nos brindo una gran mejora en cuanto a resultados, la implementacion de este generador esta en el archivo tiny_twis.c y lo compararemos con el tiny_mc.c.
+
+### Mejoras a implementar en el futuro
+Como mejoras a implementar en el futuro pensamos en investigar sobre otros generadores de numeros aleatorios, ya que vimos esto es lo que mas impacta en el rendimiento del programa. 
+Paralelizar la generacion de numeros paralelos.
+
+
+### Conclusion
+
+
+![alt text](resi7.png)
+
+
+![alt text](resM1.png)

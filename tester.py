@@ -87,7 +87,7 @@ def runScale(linux=True, flags='-O2 -ffast-math -funroll-all-loops', compiler='g
         printProgressBar(i, 65534)
     x, y = zip(*results)
     #Scipy spline interpolation
-    spl = UnivariateSpline(x, y, k=2, s=30000)
+    spl = UnivariateSpline(x, y, k=2, s=15000)
     xs = np.linspace(512, 65534, 500)
     plt.title("Scaling")
     plt.xlabel("Cantidad de Fotones")
