@@ -1,5 +1,7 @@
 ## Informe Laboratorio 1
 
+### Integrantes: Escalera Pedro, Imán Federico.
+
 #### Hardware y software
 - Intel® Core™ i7-8550U CPU @ 1.80GHz × 8 
 - 16 gb de ram DDR4 2400 MT/s 128 bit width
