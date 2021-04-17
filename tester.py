@@ -23,7 +23,7 @@ def runExplore(linux = True, runs=10, photons=32768):
     else:
         compilers = ["gcc-10", "clang"]
         flags1 = ['-O1', '-O2', '-O3','-Ofast']
-        flags2 = [' -ffast-math ']
+        flags2 = [' -ffast-math ', ' funroll-loops ', ' funroll-all-loops ']
 
     powerFlagsw2 =[''.join(tup) for tup in powerset(flags2)] #Crete powerset of flags2
     superPowrFlags = [fl1 + fl2 for fl1 in flags1 for fl2 in powerFlagsw2] #Get all permutations of the powerset and Os
@@ -39,7 +39,7 @@ def runExplore(linux = True, runs=10, photons=32768):
         for index, flag in enumerate(superPowrFlags):
             for target in targets:
                 #Limpia
-                execute(f'make cleanMain TARGET={target}')
+                execute(f'make clean TARGET={target} -j4')
                 # Arma comando
                 compiler_command = f"make CC='{compiler}' EXTRA='{flag} -DPHOTONS={photons} -DSEED={randomSeed}' TARGET='{target}' -j8  "
                 #Compila
