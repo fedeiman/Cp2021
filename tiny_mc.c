@@ -43,7 +43,6 @@ static void photon(void)
     float v = 0.0f;
     float w = 1.0f;
     float weight = 1.0f;
-
     for (;;) {
         float t = -logf(rand() / (float)RAND_MAX); /* move */
         x += t * u;
@@ -75,6 +74,7 @@ static void photon(void)
             weight /= 0.1f;
         }
     }
+
 }
 
 

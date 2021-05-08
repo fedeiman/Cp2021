@@ -3,7 +3,7 @@
 CC = gcc
 
 # Flags
-CFLAGS = -std=c11 -Wall -Wextra $(EXTRA)
+CFLAGS = -std=c11 -O3 -Wall -Wextra -fopt-info-vec-missed $(EXTRA)
 LDFLAGS = -lm
 EXTRA =
 
