@@ -26,3 +26,29 @@ Detalla informacion sobre todos los loops y las optimizaciones realizadas
 Todas las opciones anteriores juntas.
 
 Asi con las flags  -fopt-info-vec-missed  y -fopt-info-vec-note podemos ver que absolutamente ningun loops es autovectorizado por gcc.
+
+##### Clang:
+
+La vectorizacion esta habilitada por defecto en clang. 
+ 
+Algunas de las flags mas importantes son:
+
+    --fno-vectorize
+
+desabilita la autovectorizacion.
+
+    -Rpass=loop-vectorize
+
+identifica los loops que fueron exitozamente vectorizados.
+
+    -Rpass-missed=loop-vectorize
+
+identifica los loops que no fueron exitozamente vectorizados.
+
+    -Rpass-analysis=loop-vectorize
+
+identifica porque fallo una vectorizacion 
+
+    -Rpass-analysis=loop-vectorize-fsave-optimization-record
+
+ enumera múltiples causas de falla de vectorización.
