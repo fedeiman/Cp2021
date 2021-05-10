@@ -1,8 +1,10 @@
 # Object files
 *.o
+*.yaml
 # Compiled files
 tiny_mc
 tiny_twis
+tiny_vec
 #python cache
 __pycache__/
 #Diffrent in arm and x86
