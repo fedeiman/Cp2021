@@ -5,6 +5,7 @@
 #### Autovectorizacion
 
 ##### GCC:
+
 -O3  o -ftree-vectorize activan la vectorizacion de loops pero no mostraran que optimizaron a menos que activemos otras flags como:
 
     -fopt-info-vec  -fopt-info-vec-optimized
@@ -52,3 +53,7 @@ identifica porque fallo una vectorizacion
     -Rpass-analysis=loop-vectorize-fsave-optimization-record
 
  enumera múltiples causas de falla de vectorización.
+
+con clang obtenemos un poco mas de informacion de porque no esta pudiendo vectorizar ya que la flag -Rpass-analysis=loop-vectorize nos dice que la funcion rand() que genera un numero random no puede ser vectorizada y por otro lado no puede determinar el numero de loops en el do while.
+
+#### Vectorizacion:
