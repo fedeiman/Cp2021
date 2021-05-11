@@ -5,14 +5,14 @@ CC = gcc
 INC = -I../ -I../../
 # Flags
 #CFLAGS = $(INC) -std=c11 -Wall -Wextra -O3 -march=native -mavx2 -Rpass=loop-vectorize -Rpass=missed=loopvectorize -Rpass-analysis=loop-vectorize 
-CFLAGS = $(INC) -std=c11 -Wall -Wextra -O3 -march=native -fopt-info-vec-note #-mavx2 -ftree-vectorize -fopt-info-vec 
+CFLAGS = $(INC) -std=c11 -Wall -Wextra -O3 -march=native -fopt-info-vec-note -mavx2 -ftree-vectorize -fopt-info-vec 
 LDFLAGS = -lm
 
 # Binary file
 TARGET = tiny_mc
 
 # Files
-C_SOURCES = tiny_mc.c wtime.c
+C_SOURCES = tiny_mc.c wtime.c mtwister.c
 C_OBJS = $(patsubst %.c, %.o, $(C_SOURCES))
 
 # Rules
