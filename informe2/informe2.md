@@ -56,4 +56,25 @@ identifica porque fallo una vectorizacion
 
 con clang obtenemos un poco mas de informacion de porque no esta pudiendo vectorizar ya que la flag -Rpass-analysis=loop-vectorize nos dice que la funcion rand() que genera un numero random no puede ser vectorizada y por otro lado no puede determinar el numero de loops en el do while.
 
+##### Intentos de modificacion de codigo para autovectorizar:
+
+Para intentar autovectorizar decidimos intercambiar la linea
+
+    float t = -logf(rand() / (float)RAND_MAX);
+
+usando el polinomio de taylor para aproximar el valor del logaritmo y asi intentar poder generar algun tipo de autovectorizacion. una vez realizado esto, pudimos autovectorizar un loop, pero de todas formas el resultado obtenido era peor que sin el cambio, por lo que decidimos descartar esa solucion y comenzar con la vectorizacion manual. 
+
+
 #### Vectorizacion:
+Para la vectorizacion usamos intrinsics.
+Algunas de las optimizaciones que realizamos fueron:
+-  generando 8 numeros aleatorios a la vez y asi obtener una mejora de rendimiento.
+- pedro segui aca porfi jeje
+
+#### Problemas:
+El mayor problema encontrado durante la implementacion de intrinsics fue que nos dimos cuenta que el generador mersenne twister al intentar generar 8 numeros aleatorios a la vez, generaba los mismos 8 numeros por lo que decidimos cambiar el generador por el de la libreria estandar de C.
+con lo que perdimos mucho rendimiento.
+
+#### Posibles mejoras:
+Las posibles mejoras a futuro es buscar un buen generador de numeros que funcione bien y eficientemente.
+
