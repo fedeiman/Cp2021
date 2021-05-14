@@ -24,12 +24,9 @@ char t3[] = "CPU version, adapted for PEAGPGPU by Gustavo Castellano"
 static float heat[SHELLS];
 static float heat2[SHELLS];
 
-
-
 inline __m256 random_vector(MTRand r) {
     return _mm256_set_ps(rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX);
 }
-
 
 //https://stackoverflow.com/a/39822314/9007125
 //https://stackoverflow.com/a/65537754/9007125
@@ -62,7 +59,7 @@ inline __m256 fast_log_sse(__m256 a){
  ***/
 
 //Working with sets of 8 at a time
-static void photon(MTRand r)
+static void photon()
 {
     /*     
     const float albedo = MU_S * (1.0f / (MU_S + MU_A));
@@ -98,7 +95,6 @@ static void photon(MTRand r)
     __m256 w = _mm256_set1_ps(1.0f);
     __m256 weight = _mm256_set1_ps(1.0f);
     int photon_count = 0;
-    fflush( stdout );
     while(photon_count < PHOTONS){
         
         //float t = -logf((float)genRand(&r)); /* move */
@@ -140,16 +136,11 @@ static void photon(MTRand r)
 
         // You can end up with up to 7 extra photons
         for(int i = 0; i < 8; i++){
-            //printf("Working1...");
-            fflush( stdout );
-            heat[shell_ints[i]] = heat_res[i];
-            heat2[shell_ints[i]] = heat_res_squared[i];
+            heat[shell_ints[i]] += heat_res[i];
+            heat2[shell_ints[i]] += heat_res_squared[i];
 
             if(weight[i] == 1.0f){
                 photon_count++;
-                //printf("Working...");
-                fflush( stdout );
-
             }
         }
 
@@ -172,7 +163,7 @@ static void photon(MTRand r)
             condition = _mm256_cmp_ps(ones, t, _CMP_GE_OS);
             extra = _mm256_or_ps(extra, condition);
             //t = xi1 * xi1 + xi2 * xi2;
-            fflush( stdout );
+            //fflush( stdout );
         } while (_mm256_movemask_ps(extra) != 255 );
         
         /*
@@ -223,12 +214,11 @@ int main(void)
     */
     // configure RNG
     srand(SEED);
-    MTRand r = seedRand(SEED);
 
     // start timer
     double start = wtime();
     // simulation
-    photon(r);
+    photon();
 
     // stop timer
     double end = wtime();
