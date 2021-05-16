@@ -21,12 +21,11 @@ def runScale():
         execute(f"cd {path} && make EXTRA='-DPHOTONS={i} -DSEED={randomSeed}'")
         temp = []
         for j in range(5):
-            if j> 0:
-                temp.append(float(executeWithOutput(f'cd {path} && ./tiny_mc')))
+            temp.append(float(executeWithOutput(f'cd {path} && ./tiny_mc')))
         results.append([i, sum(temp)/len(temp)])
-    with open(f"{path}/results.txt", "a") as f:
+    with open(f"{path}/results_sca.txt", "a") as f:
         f.write(f"\n\nResults on {datetime.now()}\n")
-        f.write(results)
+        f.write(str(results))
         f.write("\n")
 
 if __name__ == "__main__":

@@ -24,7 +24,7 @@ char t3[] = "CPU version, adapted for PEAGPGPU by Gustavo Castellano"
 static float heat[SHELLS];
 static float heat2[SHELLS];
 
-inline __m256 random_vector(MTRand r) {
+inline __m256 random_vector() {
     return _mm256_set_ps(rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX,rand() / (float)RAND_MAX);
 }
 
@@ -69,7 +69,7 @@ static void photon()
     const __m256 albedo = _mm256_set1_ps(MU_S * (1.0f / (MU_S + MU_A)));
     const __m256 shells_per_mfp = _mm256_set1_ps(1e4 * (1.0f / MICRONS_PER_SHELL) * (1.0f / (MU_A + MU_S)));
     // Move this here to avoid realocc of const value
-    const __m256i shellConst = _mm256_set1_epi32(SHELLS - 1);
+    const __m256i shellConst = _mm256_set1_epi32((int)100);
     const __m256 zeros = _mm256_set1_ps(0.0f);
     const __m256 ones = _mm256_set1_ps(1.0f);
     const __m256 twos = _mm256_set1_ps(2.0f);
@@ -99,7 +99,8 @@ static void photon()
         
         //float t = -logf((float)genRand(&r)); /* move */
         // Possibly not portable outside gcc, fast 
-        __m256 t = -fast_log_sse(random_vector(r));
+        __m256 t = -fast_log_sse(random_vector());
+
         /*
         x += t * u;
         y += t * v;
@@ -110,10 +111,18 @@ static void photon()
         z = _mm256_fmadd_ps(t, w, z);
 
         //unsigned int shell = sqrtf(x * x + y * y + z * z) * shells_per_mfp; /* absorb */
-        __m256 shell = _mm256_mul_ps(_mm256_sqrt_ps((_mm256_fmadd_ps(x, x, _mm256_fmadd_ps(y, y, _mm256_mul_ps(z, z))))), shells_per_mfp);
+        __m256 xx = _mm256_mul_ps(x, x);
+        __m256 yy = _mm256_mul_ps(y, y);
+        __m256 zz = _mm256_mul_ps(z, z);
+
+        __m256 shell = _mm256_sqrt_ps(_mm256_add_ps(xx, _mm256_add_ps(yy, zz)));
+
+
+        shell = _mm256_mul_ps(shell, shells_per_mfp);
+
         // int casting, no unsigned int, should work tho
         __m256i shell_ints =_mm256_cvtps_epi32(shell);
-        shell_ints = _mm256_min_epi32(shellConst, shell_ints);
+        //shell_ints = _mm256_min_epi32(shellConst, shell_ints);
         /*
         if (shell > SHELLS - 1) {
             shell = SHELLS - 1;
@@ -129,7 +138,7 @@ static void photon()
         //weight *= albedo;
 
         __m256 cond = _mm256_cmp_ps(weight, pointZeroOne, _CMP_LT_OS);
-        __m256 randMask = _mm256_cmp_ps(random_vector(r), pointOne, _CMP_GT_OS);
+        __m256 randMask = _mm256_cmp_ps(random_vector(), pointOne, _CMP_GT_OS);
         __m256 breakMask = _mm256_and_ps(randMask, cond);
         weight = _mm256_blendv_ps(weight, _mm256_mul_ps(weight, tens), cond);
         weight = _mm256_blendv_ps(weight, ones, breakMask);
@@ -138,7 +147,7 @@ static void photon()
         for(int i = 0; i < 8; i++){
             //heat[shell_ints[i]] += heat_res[i];
             //heat2[shell_ints[i]] += heat_res_squared[i];
-            printf("%d", shell_ints[i]);
+            //printf("%f\n", shell[i]);
 
             if(weight[i] == 1.0f){
                 photon_count++;
@@ -157,8 +166,8 @@ static void photon()
         __m256 extra = breakMask;
         //float xi1, xi2;
         do {
-            xi1 =  _mm256_fmsub_ps(twos, random_vector(r), ones);
-            xi2 =  _mm256_fmsub_ps(twos, random_vector(r), ones);
+            xi1 =  _mm256_fmsub_ps(twos, random_vector(), ones);
+            xi2 =  _mm256_fmsub_ps(twos, random_vector(), ones);
             t = _mm256_fmadd_ps(xi1, xi1, _mm256_mul_ps(xi2, xi2));
 
             condition = _mm256_cmp_ps(ones, t, _CMP_GE_OS);
@@ -204,8 +213,6 @@ static void photon()
 
 int main(void)
 {
-    printf("Working...");
-    fflush( stdout );
     // heading
     /*
     printf("# %s\n# %s\n# %s\n", t1, t2, t3);
