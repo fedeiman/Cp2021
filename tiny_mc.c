@@ -136,8 +136,9 @@ static void photon()
 
         // You can end up with up to 7 extra photons
         for(int i = 0; i < 8; i++){
-            heat[shell_ints[i]] += heat_res[i];
-            heat2[shell_ints[i]] += heat_res_squared[i];
+            //heat[shell_ints[i]] += heat_res[i];
+            //heat2[shell_ints[i]] += heat_res_squared[i];
+            printf("%d", shell_ints[i]);
 
             if(weight[i] == 1.0f){
                 photon_count++;

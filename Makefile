@@ -7,6 +7,7 @@ INC = -I../ -I../../
 #CFLAGS = $(INC) -std=c11 -Wall -Wextra -O3 -march=native -mavx2 -Rpass=loop-vectorize -Rpass=missed=loopvectorize -Rpass-analysis=loop-vectorize 
 CFLAGS = $(INC) -std=c11 -Wall -Wextra -O3 -march=native -fopt-info-vec-note -mavx2 -ftree-vectorize -fopt-info-vec 
 LDFLAGS = -lm
+EXTRA = 
 
 # Binary file
 TARGET = tiny_mc
@@ -19,7 +20,7 @@ C_OBJS = $(patsubst %.c, %.o, $(C_SOURCES))
 all: $(TARGET)
 
 $(TARGET): $(C_OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(EXTRA) -o $@ $^ $(LDFLAGS)
 
 clean:
 	rm -f $(TARGET) *.o
