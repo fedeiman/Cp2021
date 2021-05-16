@@ -72,13 +72,14 @@ Algunas de las optimizaciones que realizamos fueron:
 -  Utilizamos una version vectorizada de log que encontramos en stackoverflow y que utiliza el metodo de separar el argumento en su exponente y mantissa, tambien la editamos un poco para que use fmadd.
 - Utilizamos mascaras para marcar que vectores ya habian terminado (break) y cuales debian continuar para evitar forzar al loop a terminar los 8 fotones antes de continuar al siguiente set de 8.
 - Usamos la funcion de rsqrt que es mucho mas rapida y calcula:
-![formula](https://render.githubusercontent.com/render/math?math=\sqrt{\frac{1}x}) al final donde se calcula ![formula](https://render.githubusercontent.com/render/math?math=v=xi1*\sqrt{(1-u^2)*(\frac{1}t)}), ahora es claro que esto es equivalente a ![formula](https://render.githubusercontent.com/render/math?math=v=xi1*\sqrt{\frac{(1-u^2)}{t}})  por lo que podemos hacer ![formula](https://render.githubusercontent.com/render/math?math=v=xi1*rsqrt\left({\frac{t}{(1-u^2)}}\right)) 
+![formula](https://render.githubusercontent.com/render/math?math=\sqrt{\frac{1}x}). La utilizamos donde se calcula ![formula](https://render.githubusercontent.com/render/math?math=v=xi1*\sqrt{(1-u^2)*(\frac{1}t)}), es claro que esto es equivalente a ![formula](https://render.githubusercontent.com/render/math?math=v=xi1*\sqrt{\frac{(1-u^2)}{t}})  por lo que podemos hacer ![formula](https://render.githubusercontent.com/render/math?math=v=xi1*rsqrt\left({\frac{t}{(1-u^2)}}\right)) 
 
 ---
 ## Scaling:
-Lamentablemente no notamos una gran mejoria vectorizando con intrinsics, no sabemos si esto se debe a que tuvimos que volver a srand como rng(explicado mas adelante) o a que vectorizamos todo sin analizar realmente si la vectorizacion era efectivamente mas rapida, finalmente hicimos los analisis de scaling, aunque como mencionamos obtuvimos iguales o peores resultados que sin vectorizacion:
+Lamentablemente no notamos una gran mejoria vectorizando con intrinsics, no sabemos si esto se debe a que tuvimos que volver a srand como rng(explicado mas adelante) o a que vectorizamos todo sin analizar realmente si la vectorizacion era efectivamente mas rapida, finalmente hicimos los analisis de scaling, aunque como mencionamos obtuvimos iguales o peores resultados que sin vectorizacion. Al test de scaling lo corrimos en zx81.
 
 ![Scaling](Scaling_Lab2.png)
+
 ---
 ## Problemas:
 El mayor problema encontrado durante la implementacion de intrinsics fue que nos dimos cuenta que el generador mersenne twister al intentar generar 8 numeros aleatorios a la vez, generaba los mismos 8 numeros, esto causaba que en algunas corridas funcionase tiny_mc y en otras no, esto se debe al do_while donde se generan xi1 y xi2 ya que si los random son malos y son siempre iguales hay casos donde nunca sale de ahi. Creemos que este comportamiento es debido a una mala implementacion del mersenne twister ya que cuando lo miramos sin vectorizar tambien encontramos que tenia un periodo muy chico (alrededor de 150 dependiendo la corrida) antes de que se empezase a repetir. Por esto volvimos a usar srand y rand por una cuestion de que sabemos que funcionan aunque sean lentos, con eso comenzo a funcionar correctamente el codigo.
