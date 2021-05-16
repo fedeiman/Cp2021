@@ -89,4 +89,17 @@ El mayor problema encontrado durante la implementacion de intrinsics fue que nos
 Las posibles mejoras a futuro es buscar un buen generador de numeros que funcione bien y eficientemente. Estuvimos viendo pcg pero tuvimos problemas para implementarlo, igualmente noo encontramos ningun rng que sea particularmente bueno para generar 8 numeros aleatorios a la vez, que seria perfecto para nosotros.
 Tambien nos sigue sin convencer el log del principio, buscar alguna forma mas rapida de generar una distribucion exponencial o alguna forma vectorizada estaria bueno. Encontramos [este paper](https://aip.scitation.org/doi/pdf/10.1063/1.168562) que utiliza dos randoms uniformes y algunos modulos en base 2 pero habria que hacer mediciones para ver si es mas caro hacer el log de un random o las operaciones que propone el paper que incluyen "calentar" registros y generar dos random en vez de uno.
 
+---
+## Conclusiones:
 
+Como conclusiones generales podemos ver que no nos fue tan bien en la vectorizacion, principalmente por problemas con el generador de numeros aleatorios que usamos lo que realmente perjudica la performance del programa.
+Por lo que la principal mejora a implementar a futuro es cambiar el generador por uno que funcione mas eficientemente y asi podremos obtener las mejoras esperadas en cuanto a vectorizacion.
+
+![gra](gra1.png)
+
+Como vemos en este grafico, notamos que correr en zx81 no nos da mejores resultados, y que obtenemos en general un rendimiento mediocre.
+
+![gra](gra.png)
+
+Ahora podemos ver como empeoro respecto al lab 1.
+Analizando ambos graficos podemos decir que la vectorizacion no es tan buena si tenemos un mal generador de numeros. ya que en el lab 1 usamos una implementacion de mersenne twister con lo que logramos una mejora sustancial en cuanto a resultados.
