@@ -38,4 +38,4 @@ Ahora nos parecio interesante comparar los resultados del procesador i7 en el la
 
 ![alt text](gr2.png)
 
-Aqui vemos como la mejora respecto a labs anteriores, esto se da por el uso de Openmp y el cambio de generador de numeros aleatorios.
+Aqui vemos la mejora respecto a labs anteriores, esto se da por el uso de Open mp y el cambio de generador de numeros aleatorios.
