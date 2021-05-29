@@ -1,5 +1,5 @@
 # Compilers
-CC = gcc-10
+CC = gcc
 #CC = clang-11
 
 # Flags
