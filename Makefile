@@ -1,19 +1,18 @@
 # Compilers
-CC = gcc
+CC = gcc-10
 #CC = clang-11
 
-INC = -I../ -I../../
 # Flags
 #CFLAGS = $(INC) -std=c11 -Wall -Wextra -O3 -march=native -mavx2 -Rpass=loop-vectorize -Rpass=missed=loopvectorize -Rpass-analysis=loop-vectorize 
-CFLAGS = $(INC) -std=c11 -Wall -Wextra -O3 -march=native -fopt-info-vec-note -mavx2 -ftree-vectorize -fopt-info-vec 
+CFLAGS = $(INC) -std=c11 -Wall -Wextra -O3 -funroll-loops -ffast-math -flto -fopenmp
 LDFLAGS = -lm
 EXTRA = 
 
 # Binary file
-TARGET = tiny_mc
+TARGET = tiny_pcg
 
 # Files
-C_SOURCES = tiny_mc.c wtime.c
+C_SOURCES = tiny_pcg.c wtime.c pcg_basic.c
 C_OBJS = $(patsubst %.c, %.o, $(C_SOURCES))
 
 # Rules
