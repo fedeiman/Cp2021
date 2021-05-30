@@ -23,7 +23,8 @@ char t3[] = "CPU version, adapted for PEAGPGPU by Gustavo Castellano"
             " and Nicolas Wolovick";
 
 // global state, heat and heat square in each shell
-
+static float heat[SHELLS];
+static float heat2[SHELLS];
 
 double myrand(pcg32_random_t *rngptr){
     return ldexp(pcg32_random_r(rngptr) ,-32);
@@ -102,9 +103,6 @@ int main(void)
     //pcg32_srandom_r(&rng1, time(NULL), (intptr_t)&rng1);
     //pcg32_srandom_r(&rng2, time(NULL), (intptr_t)&rng2);
     //pcg32_srandom_r(&rng3, time(NULL), (intptr_t)&rng3);
-
-    float heat[2][SHELLS];
-    //static float heat2[SHELLS];
 
     const char* s = getenv("OMP_NUM_THREADS");
     int num_threads;
