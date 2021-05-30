@@ -23,8 +23,7 @@ char t3[] = "CPU version, adapted for PEAGPGPU by Gustavo Castellano"
             " and Nicolas Wolovick";
 
 // global state, heat and heat square in each shell
-static float heat[SHELLS];
-static float heat2[SHELLS];
+
 
 double myrand(pcg32_random_t *rngptr){
     return ldexp(pcg32_random_r(rngptr) ,-32);
@@ -58,10 +57,10 @@ static void photon(pcg32_random_t rng_ptr)
         if (shell > SHELLS - 1) {
             shell = SHELLS - 1;
         }
-        heat[shell] += (1.0f - albedo) * weight;
-        heat2[shell] += (1.0f - albedo) * (1.0f - albedo) * weight * weight; /* add up squares */
-        weight *= albedo;
 
+            heat[shell] += (1.0f - albedo) * weight;
+            heat2[shell] += (1.0f - albedo) * (1.0f - albedo) * weight * weight; /* add up squares */   
+        weight *= albedo;
         if (weight < 0.001f) { /* roulette */
             if (myrand(&rng_ptr) > 0.1f)
                 break;
@@ -99,22 +98,39 @@ int main(void)
     printf("# Photons    = %8d\n#\n", PHOTONS); */
 
     // configure RNG
-    pcg32_random_t rng1, rng2, rng3;
-    pcg32_srandom_r(&rng1, time(NULL), (intptr_t)&rng1);
+    //pcg32_random_t rng1, rng2, rng3;
+    //pcg32_srandom_r(&rng1, time(NULL), (intptr_t)&rng1);
     //pcg32_srandom_r(&rng2, time(NULL), (intptr_t)&rng2);
     //pcg32_srandom_r(&rng3, time(NULL), (intptr_t)&rng3);
 
+    float heat[2][SHELLS];
+    //static float heat2[SHELLS];
+
+    const char* s = getenv("OMP_NUM_THREADS");
+    int num_threads;
+    if(s){
+        num_threads = atoi(s);
+    }
+    else{
+        printf("Please define OMP_NUM_THREADS");
+        exit(1);
+    }
+
+    pcg32_random_t rngs[num_threads];
+    for(int i = 0; i < num_threads; i++){
+        pcg32_srandom_r(&(rngs[i]), time(NULL) * (i + 1), (intptr_t)&(rngs[i]));
+    }
 
     // start timer
-    double start = wtime();
-
+    double start = omp_get_wtime();
+    
     // simulation
-    #pragma omp parallel for
+    #pragma omp parallel for schedule(dynamic)
     for (unsigned int i = 0; i < PHOTONS ; ++i) {
-        photon(rng1);
+        photon(rngs[omp_get_thread_num()]);
     }
     // stop timer
-    double end = wtime();
+    double end = omp_get_wtime();
     assert(start <= end);
     double elapsed = end - start;
 
