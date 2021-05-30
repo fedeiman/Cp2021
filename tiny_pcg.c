@@ -26,6 +26,11 @@ char t3[] = "CPU version, adapted for PEAGPGPU by Gustavo Castellano"
 static float heat[SHELLS];
 static float heat2[SHELLS];
 
+typedef struct PhotonHeat {
+    float *heat;
+    float *heat2;
+} PhotonHeat;
+
 double myrand(pcg32_random_t *rngptr){
     return ldexp(pcg32_random_r(rngptr) ,-32);
 }
@@ -34,7 +39,7 @@ double myrand(pcg32_random_t *rngptr){
  * Photon
  ***/
 
-static void photon(pcg32_random_t rng_ptr)
+static void photon(pcg32_random_t rng_ptr, PhotonHeat result)
 {
     const float albedo = MU_S / (MU_S + MU_A);
     const float shells_per_mfp = 1e4 / MICRONS_PER_SHELL / (MU_A + MU_S);
@@ -59,8 +64,8 @@ static void photon(pcg32_random_t rng_ptr)
             shell = SHELLS - 1;
         }
 
-            heat[shell] += (1.0f - albedo) * weight;
-            heat2[shell] += (1.0f - albedo) * (1.0f - albedo) * weight * weight; /* add up squares */   
+        result.heat[shell] += (1.0f - albedo) * weight;
+        result.heat2[shell] += (1.0f - albedo) * (1.0f - albedo) * weight * weight; /* add up squares */   
         weight *= albedo;
         if (weight < 0.001f) { /* roulette */
             if (myrand(&rng_ptr) > 0.1f)
@@ -79,8 +84,6 @@ static void photon(pcg32_random_t rng_ptr)
         float tmp = sqrtf((1.0f - u * u) / t);
         v = xi1 * tmp;
         w = xi2 * tmp;
-
-
     }
 }
 
@@ -115,8 +118,20 @@ int main(void)
     }
 
     pcg32_random_t rngs[num_threads];
+    PhotonHeat partials[num_threads];
+
     for(int i = 0; i < num_threads; i++){
         pcg32_srandom_r(&(rngs[i]), time(NULL) * (i + 1), (intptr_t)&(rngs[i]));
+        float *heatptr = (float*) calloc(SHELLS, sizeof(float));
+        float *heat2ptr = (float*) calloc(SHELLS, sizeof(float));
+        if(heat2ptr && heatptr){
+            partials[i].heat = heatptr;
+            partials[i].heat2 = heat2ptr;
+        }
+        else{
+            printf("calloc failed, exiting \n");
+            exit(1);
+        }
     }
 
     // start timer
@@ -125,17 +140,28 @@ int main(void)
     // simulation
     #pragma omp parallel for schedule(dynamic)
     for (unsigned int i = 0; i < PHOTONS ; ++i) {
-        photon(rngs[omp_get_thread_num()]);
+        photon(rngs[omp_get_thread_num()], partials[omp_get_thread_num()]);
+    }
+
+    #pragma omp parallel for schedule(dynamic)
+    for (unsigned int i = 0; i < SHELLS ; i++){
+        for(int j = 0; j < num_threads; j++){
+            heat[i] += partials[j].heat[i];
+            heat2[i] += partials[j].heat2[i];
+        }
     }
     // stop timer
     double end = omp_get_wtime();
     assert(start <= end);
     double elapsed = end - start;
-
+    for(int j = 0; j < num_threads; j++){
+        free(partials[j].heat);
+        free(partials[j].heat2);
+    }
     // printf("# %lf seconds\n", elapsed);
     //printf("# %lf K photons per second\n", 1e-3 * PHOTONS / elapsed);
     printf("%lf\n", 1e-3 * PHOTONS / elapsed);
-   /*  printf("# Radius\tHeat\n");
+     /* printf("# Radius\tHeat\n");
     printf("# [microns]\t[W/cm^3]\tError\n");
     float t = 4.0f * M_PI * powf(MICRONS_PER_SHELL, 3.0f) * PHOTONS / 1e12;
     for (unsigned int i = 0; i < SHELLS - 1; ++i) {
@@ -143,7 +169,7 @@ int main(void)
                heat[i] / t / (i * i + i + 1.0 / 3.0),
                sqrt(heat2[i] - heat[i] * heat[i] / PHOTONS) / t / (i * i + i + 1.0f / 3.0f));
     }
-    printf("# extra\t%12.5f\n", heat[SHELLS - 1] / PHOTONS); */
+    printf("# extra\t%12.5f\n", heat[SHELLS - 1] / PHOTONS);  */
 
     return 0;
 }
