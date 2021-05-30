@@ -5,7 +5,6 @@
 tiny_mc
 tiny_twis
 tiny_vec
-tiny_pcg
 #python cache
 __pycache__/
 #Diffrent in arm and x86
