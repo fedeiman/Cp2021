@@ -41,7 +41,7 @@ y le asignamos a cada hilo un PhotonHeat distinto
         photon(rngs[omp_get_thread_num()], partials[omp_get_thread_num()]);
     }
 
-Para finalmente reconciliar cada PhotonHeat en uno con y asi evitar race conditions.
+Para finalmente reconciliar cada PhotonHeat en uno y asi evitar race conditions.
 
 
     #pragma omp parallel for schedule(dynamic)
