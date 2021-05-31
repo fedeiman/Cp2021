@@ -158,6 +158,8 @@ int main(void)
         free(partials[j].heat);
         free(partials[j].heat2);
     }
+    
+
     // printf("# %lf seconds\n", elapsed);
     //printf("# %lf K photons per second\n", 1e-3 * PHOTONS / elapsed);
     printf("%lf\n", 1e-3 * PHOTONS / elapsed);
