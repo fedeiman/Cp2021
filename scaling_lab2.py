@@ -13,15 +13,15 @@ def executeWithOutput(command):
 
 def runScale():
     path = sys.path[0] + '/'
-    randomSeed = random.randint(0, 4294967295)
+    #randomSeed = random.randint(0, 4294967295)
     results = []
     execute(f'cd {path} && make clean')
-    for i in range(512, 65538, 512):
+    for i in range(32768, 3276800, 65536):
         execute(f'cd {path} && make cleanMain')
-        execute(f"cd {path} && make EXTRA='-DPHOTONS={i} -DSEED={randomSeed}'")
+        execute(f"cd {path} && make EXTRA='-DPHOTONS={i}'")
         temp = []
         for j in range(5):
-            temp.append(float(executeWithOutput(f'cd {path} && ./tiny_mc')))
+            temp.append(float(executeWithOutput(f'cd {path} && ./tiny_pcg')))
         results.append([i, sum(temp)/len(temp)])
     with open(f"{path}/results_sca.txt", "a") as f:
         f.write(f"\n\nResults on {datetime.now()}\n")
