@@ -19,7 +19,7 @@ CU_FLAGS = -O3 --use_fast_math -arch=sm_75 --compiler-options "$(CU_FLAGS_XCOMP)
 C_OBJS_CPU = wtime.h wtime.c params.h tiny_mc_cpu.c
 
 # Rules
-all: cpu gpu both
+all: gpu 
 
 cpu:
 	$(CC) $(CFLAGS) $(LDFLAGS) $(C_OBJS_CPU) -DM256 -o tiny_mc_cpu
