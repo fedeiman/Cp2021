@@ -8,6 +8,6 @@ tiny_vec
 #python cache
 __pycache__/
 #Diffrent in arm and x86
-wtime.c
+#wtime.c
 #Extra
 .DS_STORE
