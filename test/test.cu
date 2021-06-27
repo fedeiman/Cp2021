@@ -1,7 +1,21 @@
+#include <stdio.h>
 #include <assert.h>
 #include <curand_kernel.h>
+
 #include "params.h"
-#include <stdio.h>
+
+#define checkCudaCall(val) _checkCudaReturnValue((val), #val, __FILE__, __LINE__)
+
+inline void _checkCudaReturnValue(cudaError_t result, const char* const func, const char* const file, const int line)
+{
+    if (result != cudaSuccess) {
+        fprintf(stderr, "CUDA error at %s:%d code=%d(%s) \"%s\" \n",
+                file, line, static_cast<int>(result), cudaGetErrorString(result), func);
+        cudaDeviceReset();
+        // Make sure we call CUDA Device Reset before exiting
+        exit(static_cast<int>(result));
+    }
+}
 
 double wtime(void)
 {
@@ -149,5 +163,9 @@ unsigned run_gpu_tiny_mc(float ** heat, const int photons, const bool sync = tru
     dim3 block(BLOCK_SIZE);
     dim3 grid((photons / PHOTONS_PER_THREAD) / BLOCK_SIZE);
     photon << < grid, block >> > (heat);
+    checkCudaCall(cudaGetLastError());
+    if (sync) {
+        checkCudaCall(cudaDeviceSynchronize());
+    }
     return PHOTONS_PER_THREAD * BLOCK_SIZE * grid.x;
 }

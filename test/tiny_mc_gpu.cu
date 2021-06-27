@@ -1,12 +1,10 @@
 #include "test.cu"
 
+
 char t1[] = "Tiny Monte Carlo by Scott Prahl (http://omlc.ogi.edu)";
 char t2[] = "1 W Point Source Heating in Infinite Isotropic Scattering Medium";
 char t3[] = "CPU version, adapted for PEAGPGPU by Gustavo Castellano"
             " and Nicolas Wolovick";
-char error[] = "Error";
-
-
 
 int main()
 {
@@ -19,10 +17,9 @@ int main()
     }
 
     float ** heat;
-
-    if (cudaMallocManaged(&heat, SHELLS * sizeof(float *)) != cudaSuccess) return printf("# %s\n#", error);
+    cudaMallocManaged(&heat, SHELLS * sizeof(float *));
     for (int i = 0; i < SHELLS; i++) {
-        if(cudaMallocManaged(&heat[i], 2 * sizeof(float))!= cudaSuccess ) return printf("# %s\n#", error);
+        cudaMallocManaged(&heat[i], 2 * sizeof(float));
     }
 
     (void)run_gpu_tiny_mc(heat, PHOTONS);
@@ -39,8 +36,6 @@ int main()
     double elapsed = (end - start);
 
     printf("%lf\n", 1e-3 * PHOTONS / elapsed);
-
-
 
     return 0;
 }
