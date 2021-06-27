@@ -44,7 +44,6 @@ __global__ void setup_kernel(curandState *state, uint64_t seed)
 static __global__ void photon(PhotonHeat globHeat, curandState *rngs)
 {
     int gtid = blockDim.x * blockIdx.x + threadIdx.x;
-    int t = threadIdx.x;
 
     __shared__ float local_heat[SHELLS];
     __shared__ float local_heat2[SHELLS];
