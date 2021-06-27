@@ -20,10 +20,10 @@ def runScale():
         execute(f'cd {path} && make cleanMain')
         execute(f"cd {path} && make EXTRA='-DPHOTONS={i}'")
         temp = []
-        for j in range(5):
-            temp.append(float(executeWithOutput(f'cd {path} && ./tiny_pcg')))
+        for j in range(3):
+            temp.append(float(executeWithOutput(f'cd {path} && ./tiny_cuda')))
         results.append([i, sum(temp)/len(temp)])
-    with open(f"{path}/results_sca.txt", "a") as f:
+    with open(f"{path}/results_sca_tinyCudav2.txt", "a") as f:
         f.write(f"\n\nResults on {datetime.now()}\n")
         f.write(str(results))
         f.write("\n")
