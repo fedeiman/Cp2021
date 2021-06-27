@@ -13,7 +13,7 @@ EXTRA =
 TARGET = tiny_cuda
 
 # Files
-C_SOURCES = tiny_cuda.cu
+C_SOURCES = tiny_cuda_basico.cu
 C_OBJS = $(patsubst %.c, %.o, $(C_SOURCES))
 
 # Rules
