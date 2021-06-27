@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "test.cu"
 
 char t1[] = "Tiny Monte Carlo by Scott Prahl (http://omlc.ogi.edu)";

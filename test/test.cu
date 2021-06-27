@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <curand_kernel.h>
 #include "params.h"
+#include <stdio.h>
 
 double wtime(void)
 {
