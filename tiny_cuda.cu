@@ -137,6 +137,8 @@ int main(void)
     PhotonHeat global;
     CUDA_CALL(cudaMallocManaged(&global.heat, SHELLS * sizeof(float)));
     CUDA_CALL(cudaMallocManaged(&global.heat2, SHELLS * sizeof(float)));
+    CUDA_CALL(cudaMemset (global.heat,0, SHELLS));
+    CUDA_CALL(cudaMemset (global.heat2,0, SHELLS));
 
     //Initialize rngs, same seed, different sequence
     setup_kernel << < blocks, 128 >> > (rngs, time(NULL));
